@@ -4,7 +4,7 @@ Useful in builds where you want to increment the version number of a package eac
 
 ## Usage
 
-### New workflow
+### Example
 ```yaml
 name: Create Tag
 on: [push]
@@ -23,4 +23,5 @@ jobs:
 ## Arguments
 
 `major-version` - the number to use for the major-version number (defaults to 1)
+
 `repository-url` - The GITHUB repository URL to use to fetch/push tags
