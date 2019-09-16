@@ -5,9 +5,6 @@ inputs:
     description: 'Major version number to use when looking for/creating tags.'
     required: true
     default: 1
-  repository-url:
-    description: 'The GITHUB repository URL to use to fetch/push tags'
-    required: true
 outputs:
   version:
     description: 'The new tag version number'
@@ -16,4 +13,3 @@ runs:
   image: 'Dockerfile'
   args:
     - ${{ inputs.major-version }}
-    - ${{ inputs.repository-url }}
