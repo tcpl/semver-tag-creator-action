@@ -1,7 +1,5 @@
 #!/bin/bash 
 
-echo $GITHUB_REPOSITORY
-
 MAJOR_VERSION=$1
 GITHUB_REPOSITORY_URL=https://$GITHUB_ACTOR:$GITHUB_TOKEN@github.com/$GITHUB_REPOSITORY.git
 PATCH_VERSION=0
@@ -17,6 +15,6 @@ else
     NEW_TAG="$MAJOR_VERSION.$((${ARRAY[2]} + 1)).$PATCH_VERSION"
 fi
 
-#git push GITHUB_REPOSITORY_URL $NEW_TAG
+git push GITHUB_REPOSITORY_URL $NEW_TAG
 
 echo ::set-output name=version::$NEW_TAG
