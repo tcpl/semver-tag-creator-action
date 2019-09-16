@@ -1,0 +1,19 @@
+name: 'semver-tag-creator-action'
+description: 'Creates a new tag using semantic versioning format ([MAJOR].[MINOR].[PATCH]). We only increment the minor number. Major needs to be passed in. Patch is always 0.'
+inputs:
+  major-version:
+    description: 'Major version number to use when looking for/creating tags.'
+    required: true
+    default: 1
+  repository-url:
+    description: 'The GITHUB repository URL to use to fetch/push tags'
+    required: true
+outputs:
+  version:
+    description: 'The new tag version number'
+runs:
+  using: 'docker'
+  image: 'Dockerfile'
+  args:
+    - ${{ inputs.major-version }}
+    - ${{ inputs.repository-url }}
