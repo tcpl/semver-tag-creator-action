@@ -2,6 +2,15 @@
 
 Useful in builds where you want to increment the version number of a package each time you do a build.
 
+## Building this action
+
+```
+npm run build
+git commit
+git tag -a [tag] -m ""
+git push origin [tag]
+```
+
 ## Usage
 
 ### Example
