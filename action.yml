@@ -9,7 +9,5 @@ outputs:
   version:
     description: 'The new tag version number'
 runs:
-  using: 'docker'
-  image: 'Dockerfile'
-  args:
-    - ${{ inputs.major-version }}
+  using: 'node12'
+  main: 'index.js'

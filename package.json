@@ -1,0 +1,24 @@
+{
+  "name": "semver-tag-creator-action",
+  "version": "1.0.0",
+  "description": "Useful in builds where you want to increment the version number of a package each time you do a build.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tcpl/semver-tag-creator-action.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/tcpl/semver-tag-creator-action/issues"
+  },
+  "homepage": "https://github.com/tcpl/semver-tag-creator-action#readme",
+  "dependencies": {
+    "@actions/core": "^1.2.4",
+    "@actions/github": "^3.0.0"
+  }
+}
