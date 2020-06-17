@@ -53,8 +53,14 @@ async function run(): Promise<void> {
     if (!mostRecentTag) {
       newTag = `${majorVersion}.1.${patchVersion}`;
     } else {
-      newTag = "Work it out";
+      const tagParts = mostRecentTag.split(".");
+      const newMinor = parseInt(tagParts[1]) + 1;
+      
+      newTag = `${majorVersion}.${newMinor}.${patchVersion}`;
     }
+
+    await exec(`git tag ${newTag}`);
+    await exec(`git push ${gitHubRepositoryUrl} ${newTag}`);
 
     core.setOutput("version", newTag);
 
