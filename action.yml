@@ -1,13 +1,13 @@
-name: 'semver-tag-creator-action'
-description: 'Creates a new tag using semantic versioning format ([MAJOR].[MINOR].[PATCH]). We only increment the minor number. Major needs to be passed in. Patch is always 0.'
+name: "semver-tag-creator-action"
+description: "Creates a new tag using semantic versioning format ([MAJOR].[MINOR].[PATCH]). We only increment the minor number. Major needs to be passed in. Patch is always 0."
 inputs:
   major-version:
-    description: 'Major version number to use when looking for/creating tags.'
+    description: "Major version number to use when looking for/creating tags."
     required: true
     default: 1
 outputs:
   version:
-    description: 'The new tag version number'
+    description: "The new tag version number"
 runs:
-  using: 'node12'
-  main: './dist/index.js'
+  using: "node16"
+  main: "./dist/index.js"
