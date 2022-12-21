@@ -1,4 +1,4 @@
-import * as core from '@actions/core'
+import * as core from "@actions/core";
 import { exec as _exec } from "@actions/exec";
 
 async function exec(command: string) {
@@ -36,16 +36,17 @@ async function exec(command: string) {
 
 async function run(): Promise<void> {
   try {
-
     const gitHubRepositoryUrl = `https://${process.env.GITHUB_ACTOR}:${process.env.GITHUB_TOKEN}@github.com/${process.env.GITHUB_REPOSITORY}.git`;
-    
+
     await exec(`git fetch --tags ${gitHubRepositoryUrl}`);
 
     const majorVersion = core.getInput("major-version");
     const patchVersion = 1;
 
     const mostRecentTag = (
-      await exec(`git tag -l --sort=-version:refname "${majorVersion}.*.${patchVersion}" | head -n 1)`)
+      await exec(
+        `git tag -l --sort=-version:refname "${majorVersion}.*.${patchVersion}" | head -n 1)`
+      )
     ).stdout.trim();
 
     let newTag;
@@ -55,7 +56,7 @@ async function run(): Promise<void> {
     } else {
       const tagParts = mostRecentTag.split(".");
       const newMinor = parseInt(tagParts[1]) + 1;
-      
+
       newTag = `${majorVersion}.${newMinor}.${patchVersion}`;
     }
 
@@ -63,10 +64,9 @@ async function run(): Promise<void> {
     await exec(`git push ${gitHubRepositoryUrl} ${newTag}`);
 
     core.setOutput("version", newTag);
-
-  } catch (error) {
-    core.setFailed(error.message)
+  } catch (error: any) {
+    core.setFailed(error.message);
   }
 }
 
-run()
+run();
