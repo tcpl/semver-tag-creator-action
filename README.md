@@ -27,7 +27,7 @@ jobs:
     - uses: actions/checkout@v1
     - name: tag
       id: tag
-      uses: tcpl/semver-tag-creator-action@master
+      uses: tcpl/semver-tag-creator-action@1.2.15
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         GITHUB_ACTOR: ${{ github.actor }}
