@@ -15,6 +15,8 @@ git push origin [tag]
 
 ### Example
 
+Replace `[tag version]` with the latest tag of the action.
+
 ```yaml
 name: Create Tag
 on: [push]
@@ -24,10 +26,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v4
       - name: tag
         id: tag
-        uses: tcpl/semver-tag-creator-action@1.2.16
+        uses: tcpl/semver-tag-creator-action@[tag version]
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_ACTOR: ${{ github.actor }}
