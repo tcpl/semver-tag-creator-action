@@ -63,6 +63,8 @@ async function run(): Promise<void> {
     await exec(`git tag ${newTag}`);
     await exec(`git push ${gitHubRepositoryUrl} ${newTag}`);
 
+    // annotates the build with the new version tag
+    core.notice(`Version Tag: ${newTag}`);
     core.setOutput("version", newTag);
   } catch (error: any) {
     core.setFailed(error.message);
