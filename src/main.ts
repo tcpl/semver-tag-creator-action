@@ -1,69 +1,61 @@
 import * as core from "@actions/core";
-import { exec as _exec } from "@actions/exec";
-
-async function exec(command: string) {
-  let stdout = "";
-  let stderr = "";
-
-  try {
-    const options = {
-      listeners: {
-        stdout: (data: Buffer) => {
-          stdout += data.toString();
-        },
-        stderr: (data: Buffer) => {
-          stderr += data.toString();
-        },
-      },
-    };
-
-    const code = await _exec(command, undefined, options);
-
-    return {
-      code,
-      stdout,
-      stderr,
-    };
-  } catch (err) {
-    return {
-      code: 1,
-      stdout,
-      stderr,
-      error: err,
-    };
-  }
-}
+import * as github from "@actions/github";
 
 async function run(): Promise<void> {
   try {
-    const gitHubRepositoryUrl = `https://${process.env.GITHUB_ACTOR}:${process.env.GITHUB_TOKEN}@github.com/${process.env.GITHUB_REPOSITORY}.git`;
-
-    await exec(`git fetch --tags ${gitHubRepositoryUrl}`);
-
-    const majorVersion = core.getInput("major-version");
-    const patchVersion = 1;
-
-    const mostRecentTag = (
-      await exec(
-        `git tag -l --sort=-version:refname "${majorVersion}.*.${patchVersion}" | head -n 1)`
-      )
-    ).stdout.trim();
-
-    let newTag;
-
-    if (!mostRecentTag) {
-      newTag = `${majorVersion}.1.${patchVersion}`;
-    } else {
-      const tagParts = mostRecentTag.split(".");
-      const newMinor = parseInt(tagParts[1]) + 1;
-
-      newTag = `${majorVersion}.${newMinor}.${patchVersion}`;
+    const token = process.env.GITHUB_TOKEN;
+    if (!token) {
+      throw new Error("GITHUB_TOKEN environment variable is required");
     }
 
-    await exec(`git tag ${newTag}`);
-    await exec(`git push ${gitHubRepositoryUrl} ${newTag}`);
+    const octokit = github.getOctokit(token);
+    const { owner, repo } = github.context.repo;
 
-    // annotates the build with the new version tag
+    const majorVersion = core.getInput("major-version");
+    const patchVersion = 0;
+
+    // List all tags matching our pattern
+    const tags: string[] = [];
+    for await (const response of octokit.paginate.iterator(
+      octokit.rest.repos.listTags,
+      { owner, repo, per_page: 100 },
+    )) {
+      for (const tag of response.data) {
+        const pattern = new RegExp(
+          `^${majorVersion}\\.\\d+\\.${patchVersion}$`,
+        );
+        if (pattern.test(tag.name)) {
+          tags.push(tag.name);
+        }
+      }
+    }
+
+    // Sort by minor version descending to find the highest
+    tags.sort((a, b) => {
+      const minorA = parseInt(a.split(".")[1]);
+      const minorB = parseInt(b.split(".")[1]);
+      return minorB - minorA;
+    });
+
+    let newTag: string;
+
+    if (tags.length === 0) {
+      newTag = `${majorVersion}.1.${patchVersion}`;
+    } else {
+      const highestMinor = parseInt(tags[0].split(".")[1]);
+      newTag = `${majorVersion}.${highestMinor + 1}.${patchVersion}`;
+    }
+
+    // Create the tag via the API
+    const sha = github.context.sha;
+
+    await octokit.rest.git.createRef({
+      owner,
+      repo,
+      ref: `refs/tags/${newTag}`,
+      sha,
+    });
+
     core.notice(`Version Tag: ${newTag}`);
     core.setOutput("version", newTag);
   } catch (error: any) {
