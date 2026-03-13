@@ -19,6 +19,7 @@ async function run(): Promise<void> {
       owner,
       repo,
       ref: `tags/${majorVersion}.`,
+      per_page: 100,
     });
 
     // Find the highest minor version
