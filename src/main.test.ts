@@ -97,3 +97,38 @@ it("skips tags with mismatched patch version when finding highest minor", async 
     expect.objectContaining({ ref: "refs/tags/1.6.1" }),
   );
 });
+
+it("increments from highest minor even when there are gaps in tag sequence", async () => {
+  paginateMock.mockResolvedValue([ref("1.1.1"), ref("1.5.1"), ref("1.10.1")]);
+
+  await runAction();
+
+  expect(createRefMock).toHaveBeenCalledWith(
+    expect.objectContaining({ ref: "refs/tags/1.11.1" }),
+  );
+});
+
+it("skips tags with wrong number of version parts", async () => {
+  paginateMock.mockResolvedValue([
+    ref("1.7"), // only 2 parts
+    ref("1.9.1.0"), // 4 parts
+    ref("1.3.1"), // valid
+  ]);
+
+  await runAction();
+
+  expect(createRefMock).toHaveBeenCalledWith(
+    expect.objectContaining({ ref: "refs/tags/1.4.1" }),
+  );
+});
+
+it("fails when GITHUB_TOKEN is not set", async () => {
+  delete process.env.GITHUB_TOKEN;
+
+  await runAction();
+
+  expect(coreMock.setFailed).toHaveBeenCalledWith(
+    "GITHUB_TOKEN environment variable is required",
+  );
+  expect(createRefMock).not.toHaveBeenCalled();
+});
