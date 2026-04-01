@@ -6,7 +6,7 @@
   "main": "dist/index.js",
   "scripts": {
     "test": "vitest run",
-    "build": "tsc --noEmit && esbuild src/main.ts --bundle --platform=node --target=node24 --format=esm --outfile=dist/index.js --minify"
+    "build": "tsc --noEmit && esbuild src/main.ts --bundle --platform=node --target=node24 --format=esm --outfile=dist/index.js --minify --banner:js=\"import { createRequire } from 'module'; const require = createRequire(import.meta.url);\""
   },
   "repository": {
     "type": "git",
