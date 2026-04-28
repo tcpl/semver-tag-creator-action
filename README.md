@@ -2,14 +2,11 @@
 
 Useful in builds where you want to increment the version number of a package each time you do a build.
 
-## Building this action
+## Releasing
 
-```
-npm run build
-git commit
-git tag -a [tag] -m ""
-git push origin [tag]
-```
+Before releasing, run `npm run build` locally and commit the resulting `dist/` to the branch you intend to release from.
+
+Then, in the GitHub UI, go to **Actions** → **Release** → **Run workflow**, pick the branch in the **Use workflow from** dropdown (use `main` for normal releases, a feature branch for RC tags like `1.4.0-rc1`), enter the new tag (e.g. `1.3.8`), and click **Run workflow**. The workflow rebuilds `dist/` and fails if it doesn't match what's committed — that's the signal you forgot to rebuild. If `dist/` is current, it creates the tag and pushes it.
 
 ## Usage
 
